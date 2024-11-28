@@ -1,11 +1,14 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:happy_tech_mastering_api_with_flutter/core/api/api_consumer.dart';
+import 'package:happy_tech_mastering_api_with_flutter/core/api/end_points.dart';
+import 'package:happy_tech_mastering_api_with_flutter/core/errors/exceptions.dart';
 import 'package:happy_tech_mastering_api_with_flutter/cubit/user_state.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UserCubit extends Cubit<UserState> {
-  UserCubit() : super(UserInitial());
+  UserCubit(this.api) : super(UserInitial());
+  final ApiConsumer api;
   //Sign in Form key
   GlobalKey<FormState> signInFormKey = GlobalKey();
   //Sign in email
@@ -30,22 +33,17 @@ class UserCubit extends Cubit<UserState> {
   Future signIn() async {
     emit(SignInLoading());
     try {
-      final Response response = await Dio().post(
-        'https://food-api-omega.vercel.app/api/v1/user/signin',
+      final response = await api.post(
+        EndPoints.signIn,
         data: {
-          'email': signInEmail.text,
-          'password': signInPassword.text,
+          ApiKey.email: signInEmail.text,
+          ApiKey.password: signInPassword.text,
         },
       );
-      print(response.data);
-      print(response.statusCode);
       emit(SignInSuccess());
-    } catch (e) {
-      emit(
-        SignInFaiture(
-          errMessage: e.toString(),
-        ),
-      );
+      return response;
+    } on ServerException catch (e) {
+      emit(SignInFaiture(errMessage: e.errModel.errorMessage));
     }
   }
 }

@@ -78,13 +78,6 @@ class SignInScreen extends StatelessWidget {
                               innerText: 'Sign In',
                               onPressed: () {
                                 context.read<UserCubit>().signIn();
-
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) => const ProfileScreen(),
-                                //   ),
-                                // );
                               },
                             ),
                             const SizedBox(height: 18),
