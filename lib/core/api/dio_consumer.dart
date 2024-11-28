@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:happy_tech_mastering_api_with_flutter/core/api/end_points.dart';
 import 'package:happy_tech_mastering_api_with_flutter/core/errors/exceptions.dart';
 
 import 'api_consumer.dart';
@@ -9,7 +10,7 @@ class DioConsumer implements ApiConsumer {
 
   DioConsumer({required this.dio}) {
     dio.interceptors.add(ApiInterceptors());
-    dio.options.baseUrl = 'https://food-api-omega.vercel.app/api/v1/user';
+    dio.options.baseUrl = EndPoints.baseUrl;
     dio.interceptors.add(
       LogInterceptor(
         request: true,
@@ -38,14 +39,14 @@ class DioConsumer implements ApiConsumer {
   @override
   Future post(
     String path, {
-    Object? data,
+    dynamic data,
     Map<String, dynamic>? queryParameters,
     bool isFormData = false,
   }) async {
     try {
       final response = await dio.post(
         path,
-        data: data,
+        data: isFormData ? FormData.fromMap(data) : data,
         queryParameters: queryParameters,
       );
       return response.data;
@@ -57,14 +58,14 @@ class DioConsumer implements ApiConsumer {
   @override
   Future patch(
     String path, {
-    Object? data,
+    dynamic data,
     Map<String, dynamic>? queryParameters,
     bool isFormData = false,
   }) async {
     try {
       final response = await dio.patch(
         path,
-        data: data,
+        data:isFormData ? FormData.fromMap(data) : data,
         queryParameters: queryParameters,
       );
       return response.data;
@@ -76,14 +77,14 @@ class DioConsumer implements ApiConsumer {
   @override
   Future delete(
     String path, {
-    Object? data,
+    dynamic data,
     Map<String, dynamic>? queryParameters,
     bool isFormData = false,
   }) async {
     try {
       final response = await dio.delete(
         path,
-        data: data,
+        data: isFormData ? FormData.fromMap(data) : data,
         queryParameters: queryParameters,
       );
       return response.data;
